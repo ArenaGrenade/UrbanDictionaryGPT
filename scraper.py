@@ -3,12 +3,18 @@ import requests
 from datetime import date, timedelta
 import re
 import pandas as pd
+from ua_gen import get_random_ua
 
 make_date_url = lambda date, page: f"https://www.urbandictionary.com/yesterday.php?date={date}&page={page}"
 make_define_url = lambda termID: f"https://api.urbandictionary.com/v0/define?defid={termID}"
 
 headers = {
     'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36',
+    'referrer': 'https://google.ae',
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Pragma": "no-cache"
 }
 
 latest_date = date.today()
@@ -25,6 +31,7 @@ while current_date <= latest_date:
     
     while True:
         # Make the request for the current page
+        headers["user-agent"] = get_random_ua()
         date_url = make_date_url(current_date, current_page)
         date_response = requests.get(date_url, headers)
         print("Making request", date_url, ":", date_response.status_code)
